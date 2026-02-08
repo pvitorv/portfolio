@@ -1,4 +1,4 @@
-<x-layouts.app :title="$title ?? 'Admin'">
+<x-layouts.app :title="$title ?? 'Admin'" :noindex="true">
     <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <x-app-navbar brand="Admin" variant="default">
             <x-slot:links>

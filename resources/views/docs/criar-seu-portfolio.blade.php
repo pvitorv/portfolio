@@ -1,4 +1,8 @@
-<x-layouts.app title="Como criar seu próprio portfólio">
+<x-layouts.app
+    title="Como criar seu próprio portfólio"
+    metaDescription="Guia passo a passo: clone o repositório do portfólio no GitHub, configure o banco de dados (MySQL, SQLite ou PostgreSQL) e publique seu site com Laravel."
+    :canonicalUrl="route('docs.criar-seu-portfolio')"
+>
     <div class="min-h-screen flex flex-col">
         <x-app-navbar brand="Portfólio" variant="glass">
             <x-slot:links>

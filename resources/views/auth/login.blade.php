@@ -1,4 +1,4 @@
-<x-layouts.app title="Entrar – Portfolio">
+<x-layouts.app title="Entrar – Portfolio" :noindex="true">
     <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
         <x-app-card variant="default" padding="lg" class="w-full max-w-md">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Entrar no admin</h1>

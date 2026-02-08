@@ -8,6 +8,27 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/robots.txt', function () {
+    $sitemapUrl = rtrim(config('app.url'), '/') . '/sitemap.xml';
+    $content = "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login\n\nSitemap: {$sitemapUrl}\n";
+    return response($content, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+})->name('robots');
+
+Route::get('/sitemap.xml', function () {
+    $base = rtrim(config('app.url'), '/');
+    $urls = [
+        ['loc' => $base . '/', 'changefreq' => 'weekly', 'priority' => '1.0'],
+        ['loc' => $base . '/docs/criar-seu-portfolio', 'changefreq' => 'monthly', 'priority' => '0.8'],
+    ];
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    foreach ($urls as $u) {
+        $xml .= "  <url>\n    <loc>" . htmlspecialchars($u['loc']) . "</loc>\n    <changefreq>{$u['changefreq']}</changefreq>\n    <priority>{$u['priority']}</priority>\n  </url>\n";
+    }
+    $xml .= '</urlset>';
+    return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+})->name('sitemap');
+
 Route::get('/', function () {
     $projects = Project::where('is_visible', true)
         ->orderBy('order')
