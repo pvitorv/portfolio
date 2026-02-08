@@ -95,4 +95,23 @@ Não é um componente Blade reutilizável; está inline na welcome. Se quiser ex
 
 ---
 
+---
+
+## Contato (rodapé)
+
+**Onde:** Na própria página inicial, seção **Contato** com `id="contato"` (link do menu leva até ela). Fica no rodapé, logo acima da linha de copyright.
+
+**Estrutura:**
+- **Título** "Contato"
+- **Coluna esquerda:** texto de chamada, e-mail (mailto), telefone (tel:), localização e links LinkedIn/GitHub (dados do perfil do usuário)
+- **Coluna direita:** formulário com nome, e-mail e mensagem; envio via **POST /contact**
+
+**Fluxo:** O visitante preenche o formulário e envia; o Laravel valida e envia um e-mail para o e-mail do perfil (primeiro usuário) com o conteúdo da mensagem. O remetente do e-mail recebe e pode responder diretamente (reply-to é o e-mail de quem enviou).
+
+**Arquivos:** `app/Http/Controllers/ContactController.php`, `app/Mail/ContactMessageMail.php`, `resources/views/emails/contact-message.blade.php`. Rota: `POST /contact` → `contact.store`.
+
+**E-mail:** Configure `MAIL_*` no `.env` para envio real (SMTP, etc.). Com `MAIL_MAILER=log`, as mensagens são gravadas em `storage/logs/laravel.log` (útil para testar).
+
+---
+
 *Acrescente abaixo novos componentes e formas de uso.*

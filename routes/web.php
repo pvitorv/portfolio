@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ContactController;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,8 @@ Route::get('/', function () {
     $profile = User::first(); // único usuário = perfil público
     return view('welcome', compact('projects', 'profile'));
 });
+
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
