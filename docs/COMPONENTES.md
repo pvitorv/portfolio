@@ -4,6 +4,42 @@ Use este arquivo para registrar cada novo componente ou recurso criado, com exem
 
 ---
 
+## Autenticação e acesso ao admin
+
+**Acesso:** Apenas por **/login**. Não há view pública de admin; o usuário faz login e passa a acessar todo o conteúdo em **/admin**.
+
+**Rotas:**
+- `GET /login` – formulário de login
+- `POST /login` – autenticar (redireciona para `/admin/projects`)
+- `POST /logout` – sair (form no admin)
+
+**Proteção:** Todas as rotas em `/admin/*` usam o middleware `auth`. Se não estiver logado, o Laravel redireciona para `/login`.
+
+**Criar o primeiro usuário:** Não há tela de registro (projeto de um único usuário). Crie o usuário no banco ou via tinker, por exemplo:
+```bash
+php artisan tinker
+User::create(['name' => 'Seu Nome', 'email' => 'seu@email.com', 'password' => bcrypt('sua-senha')]);
+```
+
+---
+
+## Perfil do usuário (currículo + foto)
+
+**O que é:** Configurações de perfil do único usuário: nome, e-mail, foto, título profissional, texto sobre/currículo, telefone, localização, LinkedIn, GitHub e alteração de senha.
+
+**Onde:** Admin → **Perfil** (`/admin/profile`). Tudo em admin, sem view pública de edição.
+
+**Arquivos:**
+- `app/Http/Controllers/Admin/ProfileController.php` – edit, update
+- `resources/views/admin/profile/edit.blade.php` – formulário
+- Migration `0001_01_01_000005_add_profile_fields_to_users_table.php` – campos em `users`: photo, title, bio, phone, location, linkedin_url, github_url
+
+**Uso na página inicial:** A rota `/` usa `User::first()` como `$profile`. Na welcome são exibidos: nome, foto (ou iniciais), título, bio (seção "Sobre mim"), e no rodapé os links LinkedIn e GitHub do perfil. A estatística "Projetos" usa a quantidade de projetos.
+
+**Foto:** Upload em `storage/app/public/profile/`. É necessário `php artisan storage:link`.
+
+---
+
 ## Mini CMS – Projetos
 
 **O que é:** CRUD de projetos para exibir no portfolio. Cada projeto tem título, nome curto, descrição, URL externa e miniatura (screenshot da primeira página ou URL manual).

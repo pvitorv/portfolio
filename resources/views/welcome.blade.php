@@ -6,38 +6,47 @@
                 <a href="#sobre" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Sobre</a>
                 <a href="#projetos" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Projetos</a>
                 <a href="#contato" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Contato</a>
-                <a href="{{ route('admin.projects.index') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Admin</a>
+                <a href="{{ route('login') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Entrar</a>
             </x-slot:links>
             <x-app-theme-toggle />
         </x-app-navbar>
 
         <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
-            {{-- Hero --}}
+            {{-- Hero (dados do perfil) --}}
             <section id="inicio" class="text-center py-16">
-                <x-app-avatar size="xl" initials="JD" class="mx-auto mb-4" />
-                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Olá, sou [Seu Nome]</h1>
-                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">
-                    Desenvolvedor / Designer / o que você fizer.
-                </p>
+                @if(isset($profile) && $profile->photo_display_url)
+                    <img src="{{ $profile->photo_display_url }}" alt="{{ $profile->name }}" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-2 border-gray-200 dark:border-gray-700" />
+                @else
+                    @php
+                        $initials = isset($profile) && $profile->name ? implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', $profile->name), 0, 2))) : '?';
+                    @endphp
+                    <x-app-avatar size="xl" :initials="$initials" class="mx-auto mb-4" />
+                @endif
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Olá, sou {{ isset($profile) ? $profile->name : 'Seu Nome' }}</h1>
+                @if(isset($profile) && $profile->title)
+                    <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">{{ $profile->title }}</p>
+                @else
+                    <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">Desenvolvedor / Designer</p>
+                @endif
                 <div class="flex gap-3 justify-center flex-wrap">
-                    <x-button variant="primary" size="lg">Contato</x-button>
-                    <x-button variant="outline" size="lg">Projetos</x-button>
+                    <a href="#projetos" class="inline-flex items-center justify-center font-medium rounded-lg px-5 py-2.5 text-base bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Ver projetos</a>
+                    <a href="#sobre" class="inline-flex items-center justify-center font-medium rounded-lg px-5 py-2.5 text-base border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Sobre mim</a>
                 </div>
             </section>
 
-            {{-- Cards de destaque (opcional) --}}
+            {{-- Cards de destaque --}}
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
-                <x-app-stat-card label="Projetos" value="12" />
-                <x-app-stat-card label="Anos de experiência" value="5" variant="glass" />
-                <x-app-stat-card label="Clientes" value="8" trend="+2 este mês" trendUp="true" />
+                <x-app-stat-card label="Projetos" :value="isset($projects) ? (string) $projects->count() : '0'" />
             </section>
 
-            {{-- Sobre --}}
+            {{-- Sobre (currículo / bio do perfil) --}}
             <section id="sobre" class="py-12">
                 <x-app-card title="Sobre mim" variant="glass" padding="lg">
-                    <p class="text-gray-600 dark:text-gray-400">
-                        Aqui você pode colocar um texto sobre você, formação e experiência.
-                    </p>
+                    @if(isset($profile) && $profile->bio)
+                        <p class="text-gray-600 dark:text-gray-400 whitespace-pre-line">{{ $profile->bio }}</p>
+                    @else
+                        <p class="text-gray-600 dark:text-gray-400">Edite seu perfil no admin para exibir seu currículo e dados aqui.</p>
+                    @endif
                 </x-app-card>
             </section>
 
@@ -89,24 +98,28 @@
                         @endforeach
                     </div>
                     <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                        <a href="{{ route('admin.projects.index') }}" class="hover:underline">Admin: gerenciar projetos</a>
+                        <a href="{{ route('login') }}" class="hover:underline">Entrar para gerenciar</a>
                     </p>
                 @else
                     <x-app-empty-state
                         title="Nenhum projeto publicado"
                         description="Os projetos cadastrados no mini CMS aparecerão aqui."
                     >
-                        <a href="{{ route('admin.projects.index') }}" class="inline-flex items-center justify-center font-medium rounded-lg px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Gerenciar projetos</a>
+                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center font-medium rounded-lg px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">Entrar</a>
                     </x-app-empty-state>
                 @endif
             </section>
         </main>
 
         <x-app-footer variant="glass">
-            <span>© {{ date('Y') }} Meu Portfolio.</span>
+            <span>© {{ date('Y') }} {{ isset($profile) ? $profile->name : 'Portfolio' }}.</span>
             <div class="flex gap-4">
-                <a href="#" class="hover:underline">LinkedIn</a>
-                <a href="#" class="hover:underline">GitHub</a>
+                @if(isset($profile) && $profile->linkedin_url)
+                    <a href="{{ $profile->linkedin_url }}" target="_blank" rel="noopener noreferrer" class="hover:underline">LinkedIn</a>
+                @endif
+                @if(isset($profile) && $profile->github_url)
+                    <a href="{{ $profile->github_url }}" target="_blank" rel="noopener noreferrer" class="hover:underline">GitHub</a>
+                @endif
             </div>
         </x-app-footer>
     </div>
