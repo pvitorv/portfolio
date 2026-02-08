@@ -35,8 +35,21 @@
             </section>
 
             {{-- Cards de destaque --}}
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6 py-8">
                 <x-app-stat-card label="Projetos" :value="isset($projects) ? (string) $projects->count() : '0'" />
+                <x-app-card variant="outline" padding="md" class="flex flex-col h-full">
+                    <div class="flex flex-col h-full justify-between">
+                        <div>
+                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-1">Use este projeto</span>
+                            <p class="text-gray-900 dark:text-white font-semibold">Crie seu próprio portfólio</p>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mt-2 mb-4 line-clamp-2">Clone o repositório, configure o banco e siga o passo a passo.</p>
+                        <a href="{{ route('docs.criar-seu-portfolio') }}" class="inline-flex items-center justify-center font-medium rounded-lg px-4 py-2 text-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 w-fit">
+                            Ver passo a passo
+                            <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </x-app-card>
             </section>
 
             {{-- Sobre (currículo / bio do perfil) --}}

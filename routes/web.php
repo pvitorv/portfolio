@@ -17,6 +17,8 @@ Route::get('/', function () {
     return view('welcome', compact('projects', 'profile'));
 });
 
+Route::get('/docs/criar-seu-portfolio', fn () => view('docs.criar-seu-portfolio'))->name('docs.criar-seu-portfolio');
+
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
