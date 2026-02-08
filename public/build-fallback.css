@@ -1,0 +1,13 @@
+/* Fallback até você rodar: npm run build (ou npm run dev) */
+* { box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+  transition: background-color 0.3s, color 0.3s;
+}
+.dark body,
+html.dark body { background-color: #030712; color: #f3f4f6; }
+a { color: inherit; }
