@@ -76,10 +76,24 @@
                                         </div>
                                     @endif
                                 </a>
-                                <div class="p-5 flex-1 flex flex-col">
+                                <div class="p-5 flex-1 flex flex-col" x-data="{ expanded: false }">
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ $project->display_name }}</h3>
                                     @if($project->description)
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm flex-1 line-clamp-4">{{ $project->description }}</p>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm flex-1 transition-all"
+                                           :class="expanded ? '' : 'line-clamp-4'"
+                                        >{{ $project->description }}</p>
+                                        <div class="flex gap-2 mt-1" x-cloak>
+                                            <button type="button"
+                                                    @click="expanded = true"
+                                                    x-show="!expanded"
+                                                    class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none"
+                                            >Ler mais</button>
+                                            <button type="button"
+                                                    @click="expanded = false"
+                                                    x-show="expanded"
+                                                    class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none"
+                                            >Ler menos</button>
+                                        </div>
                                     @endif
                                     <div class="mt-4 flex flex-wrap gap-2">
                                         <a href="{{ $project->url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center font-medium rounded-lg px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
@@ -182,6 +196,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
                     <span>© {{ date('Y') }} {{ isset($profile) ? $profile->name : 'Portfolio' }}.</span>
                     <div class="flex gap-4">
+                        <a href="https://github.com/pvitorv/kit-components" target="_blank" rel="noopener noreferrer" class="hover:underline">Kit de componentes</a>
                         @if(isset($profile) && $profile->linkedin_url)
                             <a href="{{ $profile->linkedin_url }}" target="_blank" rel="noopener noreferrer" class="hover:underline">LinkedIn</a>
                         @endif
