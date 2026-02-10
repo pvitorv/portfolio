@@ -22,13 +22,14 @@ class ContactController extends Controller
             'message.required' => 'Escreva sua mensagem.',
         ]);
 
-        $profile = User::first();
-        if (! $profile || ! $profile->email) {
+        // Mensagens chegam no e-mail de serviço (MAIL_FROM_ADDRESS) para você responder pessoalmente
+        $to = config('mail.from.address') ?: User::first()?->email;
+        if (! $to) {
             return back()->with('error', 'Contato não configurado. Tente mais tarde.');
         }
 
         try {
-            Mail::to($profile->email)->send(new ContactMessageMail(
+            Mail::to($to)->send(new ContactMessageMail(
                 $validated['name'],
                 $validated['email'],
                 $validated['message']
