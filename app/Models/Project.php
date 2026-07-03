@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PublicStorageUrl;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
@@ -37,7 +38,7 @@ class Project extends Model
 
     /**
      * URL da miniatura pronta para exibir no front.
-     * Se for upload (path sem http), usa asset('storage/...'); senão usa a URL como está.
+     * Uploads em storage/app/public usam caminho relativo /storage/...
      */
     public function getThumbnailDisplayUrlAttribute(): ?string
     {
@@ -47,6 +48,6 @@ class Project extends Model
         if (str_starts_with($this->thumbnail_url, 'http://') || str_starts_with($this->thumbnail_url, 'https://')) {
             return $this->thumbnail_url;
         }
-        return asset('storage/' . ltrim($this->thumbnail_url, '/'));
+        return PublicStorageUrl::url($this->thumbnail_url);
     }
 }

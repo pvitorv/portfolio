@@ -51,7 +51,7 @@
         {{-- 1) Print automático da página inicial (screenshot) --}}
         <div x-data="thumbnailFetcher()">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                <strong>Print automático:</strong> gera um screenshot da primeira página que a URL do projeto abre.
+                <strong>Print automático:</strong> gera um screenshot da página e <strong>salva no seu servidor</strong> (não usa link externo que expira).
             </p>
             <div class="flex flex-wrap items-center gap-3">
                 <button
@@ -90,10 +90,10 @@
         {{-- 3) Ou colar URL de uma imagem --}}
         <x-app-input
             name="thumbnail_url"
-            label="Ou cole aqui a URL de uma imagem"
-            type="url"
+            label="Path ou URL da miniatura (preenchido automaticamente pelo print)"
+            type="text"
             :value="old('thumbnail_url', $project->thumbnail_url)"
-            placeholder="https://exemplo.com/imagem.jpg"
+            placeholder="projects/nome.jpg (gerado automaticamente)"
             :error="$errors->first('thumbnail_url')"
             x-ref="thumbnailInput"
         />

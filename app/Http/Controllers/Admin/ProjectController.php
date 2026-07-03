@@ -45,8 +45,11 @@ class ProjectController extends Controller
         if ($request->hasFile('thumbnail')) {
             $path = $request->file('thumbnail')->store('projects', 'public');
             $validated['thumbnail_url'] = $path;
-        } elseif (empty($validated['thumbnail_url'] ?? '')) {
-            $validated['thumbnail_url'] = null;
+        } else {
+            $validated['thumbnail_url'] = $this->resolveThumbnailForSave(
+                $validated['thumbnail_url'] ?? null,
+                $validated['url']
+            );
         }
         unset($validated['thumbnail']);
 
@@ -78,8 +81,13 @@ class ProjectController extends Controller
         if ($request->hasFile('thumbnail')) {
             $path = $request->file('thumbnail')->store('projects', 'public');
             $validated['thumbnail_url'] = $path;
-        } elseif (! array_key_exists('thumbnail_url') || $validated['thumbnail_url'] === '') {
-            $validated['thumbnail_url'] = $project->thumbnail_url;
+        } else {
+            $incoming = $validated['thumbnail_url'] ?? $project->thumbnail_url;
+            if ($incoming === '' || $incoming === null) {
+                $validated['thumbnail_url'] = $this->resolveThumbnailForSave(null, $validated['url']);
+            } else {
+                $validated['thumbnail_url'] = $this->resolveThumbnailForSave($incoming, $validated['url']);
+            }
         }
         unset($validated['thumbnail']);
 
@@ -94,17 +102,30 @@ class ProjectController extends Controller
     }
 
     /**
-     * Busca miniatura da URL do projeto (screenshot da primeira página) e retorna a URL.
+     * Gera screenshot da URL do projeto e salva em storage (path local, não link externo).
      */
     public function fetchThumbnail(Request $request)
     {
         $request->validate(['url' => 'required|url']);
         $url = $request->input('url');
-        $screenshotUrl = $this->screenshotService->getScreenshotUrl($url);
+        $path = $this->screenshotService->storeThumbnailFromProjectUrl($url);
 
         return response()->json([
-            'success' => $screenshotUrl !== null,
-            'thumbnail_url' => $screenshotUrl,
+            'success' => $path !== null,
+            'thumbnail_url' => $path,
         ]);
+    }
+
+    /**
+     * Links externos (Microlink etc.) viram arquivo em storage/projects/.
+     * Se vazio, tenta gerar automaticamente a partir da URL do projeto.
+     */
+    private function resolveThumbnailForSave(?string $thumbnailUrl, string $projectUrl): ?string
+    {
+        if (! empty($thumbnailUrl)) {
+            return $this->screenshotService->persistExternalThumbnail($thumbnailUrl);
+        }
+
+        return $this->screenshotService->storeThumbnailFromProjectUrl($projectUrl);
     }
 }
