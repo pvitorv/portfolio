@@ -4,6 +4,12 @@
             <x-app-alert variant="success" class="mb-6">{{ session('success') }}</x-app-alert>
         @endif
 
+        @if($dashboard['migration_pending'] ?? false)
+            <x-app-alert variant="warning" class="mb-6">
+                Analytics incompleto: rode <code class="text-xs bg-black/10 dark:bg-white/10 px-1 rounded">php artisan migrate --force</code> no servidor para ativar impressões e visitas.
+            </x-app-alert>
+        @endif
+
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Hub de links</h1>
