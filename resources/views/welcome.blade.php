@@ -1,6 +1,55 @@
-<x-layouts.app title="Meu Portfolio">
+@php
+    $seoTitle = isset($profile) && $profile->name ? $profile->name . ' – Portfólio' : config('app.name', 'Portfólio');
+    $seoDescription = isset($profile) && $profile->bio ? \Illuminate\Support\Str::limit(strip_tags($profile->bio), 160) : null;
+    $seoImage = isset($profile) ? $profile->photo_display_url : null;
+@endphp
+<x-layouts.app
+    :title="$seoTitle"
+    :metaDescription="$seoDescription"
+    :metaImage="$seoImage"
+    :canonicalUrl="url('/')"
+>
+    @push('structuredData')
+        @php
+            $graph = [
+                [
+                    '@type' => 'WebSite',
+                    'name' => config('app.name', 'Portfólio'),
+                    'url' => url('/'),
+                    'description' => $seoDescription ?? 'Portfólio profissional com projetos e informações de contato.',
+                    'inLanguage' => 'pt-BR',
+                ],
+            ];
+            if (isset($profile) && $profile->name) {
+                $person = [
+                    '@type' => 'Person',
+                    'name' => $profile->name,
+                    'url' => url('/'),
+                ];
+                if (!empty($profile->title)) {
+                    $person['jobTitle'] = $profile->title;
+                }
+                if ($seoDescription) {
+                    $person['description'] = $seoDescription;
+                }
+                if ($seoImage) {
+                    $person['image'] = $seoImage;
+                }
+                $sameAs = array_filter([$profile->linkedin_url ?? null, $profile->github_url ?? null]);
+                if (!empty($sameAs)) {
+                    $person['sameAs'] = array_values($sameAs);
+                }
+                $graph[] = $person;
+            }
+            $structuredData = [
+                '@context' => 'https://schema.org',
+                '@graph' => $graph,
+            ];
+        @endphp
+        <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) !!}</script>
+    @endpush
     <div class="min-h-screen flex flex-col">
-        <x-app-navbar brand="Meu Portfolio" variant="glass">
+        <x-app-navbar brand="Meu Portfólio" variant="glass">
             <x-slot:links>
                 <a href="#inicio" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Início</a>
                 <a href="#sobre" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Sobre</a>

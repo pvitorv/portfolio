@@ -1,5 +1,5 @@
-<x-layouts.app :title="$title ?? 'Admin'">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-950">
+<x-layouts.app :title="$title ?? 'Admin'" :noindex="true">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
         <x-app-navbar brand="Admin" variant="default">
             <x-slot:links>
                 <a href="{{ route('admin.projects.index') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Projetos</a>
