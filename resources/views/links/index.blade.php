@@ -51,9 +51,17 @@
     >
         {{-- cabeçalho --}}
         <header class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 text-xl font-semibold text-white/90 mb-4">
-                {{ strtoupper(substr($profile?->name ?? '?', 0, 1)) }}
-            </div>
+            @if($profile?->photo_display_url)
+                <img
+                    src="{{ $profile->photo_display_url }}"
+                    alt="{{ $profile->name }}"
+                    class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto ring-2 ring-white/15 shadow-lg shadow-violet-500/10 mb-4"
+                />
+            @else
+                <div class="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 text-2xl font-semibold text-white/90 mb-4">
+                    {{ strtoupper(substr($profile?->name ?? '?', 0, 1)) }}
+                </div>
+            @endif
 
             <h1 class="text-xl font-semibold tracking-tight text-white">{{ $profile?->name ?? 'Links' }}</h1>
 
