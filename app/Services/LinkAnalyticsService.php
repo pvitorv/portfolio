@@ -105,7 +105,7 @@ class LinkAnalyticsService
             'clicks' => $clicks,
             'clicks_7d' => $clicks7d,
             'ctr' => $ctr,
-            'last_impression' => $lastImpression ? Carbon::parse($lastImpression) : null,
+            'last_impression' => $lastImpression,
             'last_click' => $lastClick,
             'href' => $item->href,
             'editable' => $item->editable,

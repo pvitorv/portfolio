@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class HubImpression extends Model
 {
@@ -47,11 +48,13 @@ class HubImpression extends Model
             ->count();
     }
 
-    public static function lastFor(string $sourceType, string $sourceKey): ?\Illuminate\Support\Carbon
+    public static function lastFor(string $sourceType, string $sourceKey): ?Carbon
     {
-        return static::query()
+        $at = static::query()
             ->where('source_type', $sourceType)
             ->where('source_key', $sourceKey)
             ->max('viewed_at');
+
+        return $at ? Carbon::parse($at) : null;
     }
 }
