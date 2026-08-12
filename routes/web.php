@@ -44,5 +44,6 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('bio-links/{bioLink}/reset-stats', [BioLinkController::class, 'resetStats'])->name('bio-links.reset-stats');
+    Route::post('bio-links/analytics/reset-item', [BioLinkController::class, 'resetItemStats'])->name('bio-links.reset-item-stats');
     Route::resource('bio-links', BioLinkController::class)->except(['show']);
 });

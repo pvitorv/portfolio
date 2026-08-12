@@ -6,19 +6,25 @@ use App\Models\BioLink;
 use App\Models\HubClick;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\LinkAnalyticsService;
 use App\Services\LinkHubService;
 use Illuminate\Http\Request;
 
 class BioLinkPageController extends Controller
 {
     public function __construct(
-        private LinkHubService $linkHub
+        private LinkHubService $linkHub,
+        private LinkAnalyticsService $analytics
     ) {}
 
     public function index()
     {
         $profile = User::first();
         $sections = $this->linkHub->sections($profile);
+        $items = $this->linkHub->allItems($profile);
+
+        $this->analytics->recordPageView();
+        $this->analytics->recordImpressions($items);
 
         return view('links.index', compact('profile', 'sections'));
     }

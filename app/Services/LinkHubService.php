@@ -51,7 +51,7 @@ class LinkHubService
             return new LinkHubItem(
                 title: $link->title,
                 href: route('links.go', $link),
-                description: $link->description ? Str::limit(strip_tags($link->description), 140) : null,
+                description: $link->description ? Str::limit(strip_tags($link->description), 90) : null,
                 source: 'custom',
                 editable: true,
                 meta: (string) $link->id,
@@ -73,9 +73,8 @@ class LinkHubService
                         title: $project->display_name,
                         href: route('links.go.project', $project),
                         description: $project->description
-                            ? Str::limit(strip_tags($project->description), 140)
+                            ? Str::limit(strip_tags($project->description), 90)
                             : null,
-                        thumbnailUrl: $project->thumbnail_display_url,
                         source: 'project',
                         meta: (string) $project->id,
                     ),

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BioLink;
 use App\Models\User;
-use App\Services\LinkHubService;
+use App\Services\LinkAnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -13,24 +13,16 @@ use Illuminate\Validation\ValidationException;
 class BioLinkController extends Controller
 {
     public function __construct(
-        private LinkHubService $linkHub
+        private LinkAnalyticsService $analytics
     ) {}
 
     public function index()
     {
         $links = BioLink::orderBy('sort_order')->orderBy('id')->get();
         $profile = User::first();
-        $portfolioSections = collect($this->linkHub->sections($profile))
-            ->reject(fn (array $section) => $section['label'] === 'Links');
-        $totalClicks = $this->linkHub->totalClicks();
-        $clicksLast7Days = $this->linkHub->clicksLastDays(7);
+        $dashboard = $this->analytics->dashboard($profile);
 
-        return view('admin.bio_links.index', compact(
-            'links',
-            'portfolioSections',
-            'totalClicks',
-            'clicksLast7Days'
-        ));
+        return view('admin.bio_links.index', compact('links', 'dashboard'));
     }
 
     public function create()
@@ -67,6 +59,7 @@ class BioLinkController extends Controller
 
     public function destroy(BioLink $bioLink)
     {
+        $this->analytics->resetItem('custom', (string) $bioLink->id);
         $bioLink->delete();
 
         return redirect()
@@ -76,13 +69,21 @@ class BioLinkController extends Controller
 
     public function resetStats(BioLink $bioLink)
     {
-        $bioLink->clicks()->delete();
-        $bioLink->update([
-            'click_count' => 0,
-            'last_clicked_at' => null,
-        ]);
+        $this->analytics->resetItem('custom', (string) $bioLink->id);
 
         return back()->with('success', 'Estatísticas do link zeradas.');
+    }
+
+    public function resetItemStats(Request $request)
+    {
+        $validated = $request->validate([
+            'source_type' => ['required', Rule::in(['custom', 'project', 'profile'])],
+            'source_key' => 'required|string|max:50',
+        ]);
+
+        $this->analytics->resetItem($validated['source_type'], $validated['source_key']);
+
+        return back()->with('success', 'Estatísticas zeradas.');
     }
 
     private function validateBioLink(Request $request): array
