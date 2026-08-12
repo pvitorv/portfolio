@@ -3,6 +3,7 @@
         <x-app-navbar brand="Admin" variant="default">
             <x-slot:links>
                 <a href="{{ route('admin.projects.index') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Projetos</a>
+                <a href="{{ route('admin.bio-links.index') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Links</a>
                 <a href="{{ route('admin.profile.edit') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Perfil</a>
                 <a href="{{ url('/') }}" class="px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5">Ver site</a>
             </x-slot:links>
